@@ -14,8 +14,8 @@ services:
           condition: service_healthy
     container_name: todolist_app
     volumes:
-      - ./TodoList_App/:/todolist/TodoList_App
-      - ./core/:/todolist/core
+      - ./TodoList_App:/todolist/TodoList_App
+      - ./core:/todolist/core
   db:
     image: postgres:12.4-alpine
     environment:
