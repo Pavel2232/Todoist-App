@@ -1,0 +1,11 @@
+# ignore all
+
+**
+
+# except
+!manage.py
+!TodoList_App/**
+!core/**
+!entrypoint.sh
+!poetry.lock
+!pyproject.toml
