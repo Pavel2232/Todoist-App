@@ -4,15 +4,11 @@ services:
   fronted:
     image: sermalenk/skypro-front:lesson-36
     restart: always
-    ports:
-      - 80:80
     depends_on:
       api:
         condition: service_started
   api:
     image: pavel2232/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-    ports:
-      - 8000:8000
     depends_on:
       db:
           condition: service_healthy
@@ -27,12 +23,10 @@ services:
       POSTGRES_PASSWORD: $DB_PASSWORD
       POSTGRES_DB: $DB_NAME
     restart: always
-    ports:
-    - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U test"]
+      test: ["CMD", "pg_isready", "-q", "-d", "${DB_NAME}", "-U", "${DB_USER}" ]
       interval: 5s
       timeout: 30s
       retries: 5
@@ -42,6 +36,4 @@ services:
 
 
 volumes:
-  TodoList_App:
   postgres_data:
-  frontend:
