@@ -8,11 +8,11 @@ jobs:
       - name: clone code
         uses: actions/checkout@v3
       - name: docker build
-        run: docker build -t pavel2232/todolidy:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
+        run: docker build -t pavel2232/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
       - name: docker login
         run: echo ${{ secrets.DOCKER_TOKEN }} | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
       - name: docker push
-        run: docker push  pavel2232/todolidy:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+        run: docker push  pavel2232/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
   deploy:
     runs-on: ubuntu-22.04
     needs: build_and_push

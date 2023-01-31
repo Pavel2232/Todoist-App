@@ -10,7 +10,7 @@ services:
       api:
         condition: service_started
   api:
-    image: pavel2232/todolidy:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: pavel2232/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     ports:
       - 8000:8000
     depends_on:
