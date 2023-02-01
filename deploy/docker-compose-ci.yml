@@ -10,6 +10,9 @@ services:
   api:
     image: pavel2232/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
+    environment:
+      DATABASE_URL: $DATABASE_URL
+      SECRET_KEY: $SECRET_KEY
     depends_on:
       db:
           condition: service_healthy
