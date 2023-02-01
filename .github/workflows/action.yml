@@ -4,6 +4,9 @@ on: [push]
 jobs:
   build_and_push:
     runs-on: ubuntu-22.04
+    env:
+      DATABASE_URL: $DATABASE_URL
+      SECRET_KEY: $SECRET_KEY
     steps:
       - name: clone code
         uses: actions/checkout@v3
@@ -17,8 +20,6 @@ jobs:
     runs-on: ubuntu-22.04
     needs: build_and_push
     env:
-      DATABASE_URL: $DATABASE_URL
-      SECRET_KEY: $SECRET_KEY
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
