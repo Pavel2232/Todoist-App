@@ -34,8 +34,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           source: "deploy/docker-compose.yml"
-          target: "/"
-          strip_components: 1
+          target: "deploy"
+          strip_components: 2
       - name: deploy TODOLIST_APP
         uses: appleboy/ssh-action@master
         with:
