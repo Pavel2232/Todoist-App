@@ -20,7 +20,6 @@ class Migration(migrations.Migration):
                 ('username', models.CharField(max_length=200)),
                 ('first_name', models.CharField(max_length=200)),
                 ('last_name', models.CharField(max_length=200)),
-                ('phone', phonenumber_field.modelfields.PhoneNumberField(max_length=128, region=None, unique=True)),
                 ('email', models.EmailField(max_length=255, unique=True)),
                 ('role', models.CharField(choices=[('user', 'User'), ('admin', 'Admin')], max_length=5)),
                 ('image', models.ImageField(null=True, upload_to='django_media/')),
