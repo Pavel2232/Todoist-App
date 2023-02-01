@@ -12,10 +12,7 @@ pillow = "^9.4.0"
 django = "^4.1.5"
 django-environ = "^0.9.0"
 psycopg2 = "^2.9.5"
-django-phonenumber-field = "^7.0.2"
-phonenumberslite = "^8.13.5"
 gunicorn = "^20.1.0"
-ansible-vault = "^2.1.0"
 
 
 [build-system]
