@@ -23,6 +23,8 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
+      DATABASE_URL: ${{secrets:DATABASE_URL}}
+      SECRET_KEY: ${{secrets:SECRET_KEY}}
     steps:
       - name: clone code
         uses: actions/checkout@v3
@@ -47,5 +49,5 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             cd deploy
-            echo ${{ secrets.PASSWORD }} | sudo -S docker-compose down
-            echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d
+            docker-compose down
+            docker-compose up -d
