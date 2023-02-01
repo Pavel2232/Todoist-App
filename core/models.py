@@ -5,9 +5,6 @@ from django.db import models
 
 
 
-class UserRoles(models.TextChoices):
-    USER = 'user','User'
-    ADMIN = 'admin','Admin'
 
 class User(AbstractBaseUser):
     username = models.CharField(max_length=200)
