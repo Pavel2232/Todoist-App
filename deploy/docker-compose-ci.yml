@@ -9,13 +9,13 @@ services:
         condition: service_started
   api:
     image: pavel2232/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    environment:
+      DATABASE_URL: $DATABASE_URL
+      SECRET_KEY: $SECRET_KEY
     depends_on:
       db:
           condition: service_healthy
     container_name: todolist_app
-    volumes:
-      - ./TodoList_App:/todolist/TodoList_App
-      - ./core:/todolist/core
   db:
     image: postgres:12.4-alpine
     environment:
