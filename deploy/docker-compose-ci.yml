@@ -11,7 +11,7 @@ services:
     image: pavel2232/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
     env_file:
-      - deploy/.env
+      - .env
     depends_on:
       db:
           condition: service_healthy

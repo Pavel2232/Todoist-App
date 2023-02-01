@@ -29,7 +29,7 @@ jobs:
         run: |
           cd deploy
           cat docker-compose-ci.yml | envsubst > docker-compose.yml
-          cat .env_ci.yml | envsubst > .env
+          cat .env_ci | envsubst > .env
       - name: copy files to server
         uses: appleboy/scp-action@master
         with:
