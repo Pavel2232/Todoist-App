@@ -1,5 +1,4 @@
 from django.contrib.auth.base_user import AbstractBaseUser
-from phonenumber_field.modelfields import PhoneNumberField
 
 from core.managers import UserManager
 from django.db import models
