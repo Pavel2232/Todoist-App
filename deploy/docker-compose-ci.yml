@@ -7,6 +7,8 @@ services:
     depends_on:
       api:
         condition: service_started
+    ports:
+      -80:80
   api:
     image: pavel2232/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
