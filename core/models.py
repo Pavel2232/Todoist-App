@@ -7,10 +7,10 @@ from django.db import models
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=200)
+    username = models.CharField(max_length=200,unique=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    email = models.EmailField(max_length=255,unique=True)
+    email = models.EmailField(max_length=255,null=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_superuser = models.BooleanField(default=False)
@@ -22,7 +22,7 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
 
     REQUIRED_FIELDS = []
 

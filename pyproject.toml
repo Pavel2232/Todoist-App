@@ -13,6 +13,9 @@ django = "^4.1.5"
 django-environ = "^0.9.0"
 psycopg2 = "^2.9.5"
 gunicorn = "^20.1.0"
+drf-spectacular = "^0.25.1"
+django-cors-headers = "^3.13.0"
+djangorestframework = "^3.14.0"
 
 
 [build-system]
