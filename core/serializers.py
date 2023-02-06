@@ -1,9 +1,10 @@
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from rest_framework.exceptions import AuthenticationFailed
 
-User = get_user_model()
+from core.models import User
+
+
 
 class SingupUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=100,validators=[validate_password],write_only=True)
@@ -33,10 +34,29 @@ class LoginUserSerializer(serializers.ModelSerializer):
         read_only_fields = ['id','email','first_name','last_name','username']
 
 
-        def create(self,validated_data):
-            if not (user := authenticate(
-                    username=validated_data['username'],
-                    password=validated_data['password'])
-):
-                raise AuthenticationFailed
-            return user
+
+class EditProfileSerializer(serializers.ModelSerializer):
+
+
+    class Meta:
+        model = User
+        fields = ['id','email','username','first_name','last_name']
+        read_only_fields = ['id']
+
+
+class UptadePasswordSerializer(serializers.ModelSerializer):
+    new_password = serializers.CharField(max_length=100,validators=[validate_password])
+    old_password = serializers.CharField(max_length=100,write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id','email','new_password','old_password','first_name','last_name','username']
+        read_only_fields = ['id','email','first_name','last_name','username']
+
+
+
+    def update(self, instance, validated_data):
+        validated_data['new_password'] = make_password(validated_data['new_password'])
+        return  super().update(instance,validated_data)
+
+

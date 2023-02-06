@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 class UserManager(BaseUserManager):
 
-    def create_user(self,username, email, first_name, last_name,  password=None, password_repeat = None):
+    def create_user(self,username, email = None, first_name = None, last_name = None,  password=None, password_repeat = None):
         if not email:
             raise ValueError('Users must have an email address')
         user = self.model(
@@ -25,7 +25,7 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, username,email, first_name, last_name,  password=None,role = 'admin',):
+    def create_superuser(self, username,email, first_name, last_name,  password=None):
         """
         функция для создания суперпользователя — с ее помощью мы создаем админинстратора
         это можно сделать с помощью команды createsuperuser

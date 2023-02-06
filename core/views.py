@@ -1,14 +1,17 @@
-from django.contrib.auth import  authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import authentication, exceptions, status
-from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView, RetrieveUpdateAPIView, \
+    get_object_or_404, RetrieveUpdateDestroyAPIView, UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 
 from core.models import User
-from core.serializers import SingupUserSerializer, LoginUserSerializer
+from core.serializers import SingupUserSerializer, LoginUserSerializer, EditProfileSerializer, UptadePasswordSerializer
 
 
 # Create your views here.
@@ -17,37 +20,69 @@ class SingupView(CreateAPIView):
     serializer_class = SingupUserSerializer
 
 
-class DjangoAuthBackend(authentication.BaseAuthentication):
-    def authenticate(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
 
-        if username is None or password is None:
-            return None
-
-        user = authenticate(username=username, password=password)
-
-        if user is None:
-            raise exceptions.AuthenticationFailed('Invalid username or password')
-
-        login(request, user)
-        return (user, None)
-
-    def get_user(self, user_id):
-        try:
-            return User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            return None
 class LoginUserView(CreateAPIView):
     serializer_class = LoginUserSerializer
-    # authentication_classes = (DjangoAuthBackend,)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return Response(self.serializer_class(user).data, status=status.HTTP_201_CREATED)
+        else:
+            raise ValidationError({'username or password':"Неверный"})
+
+
+
+class GetEditProfile(RetrieveUpdateDestroyAPIView):
+    queryset = User
+    serializer_class = EditProfileSerializer
+    permission_classes = [IsAuthenticated,]
+
+
+    def get(self, request, *args, **kwargs):
+        instance = request.user
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def put(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = request.user
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        self.perform_update(serializer)
 
-    def perform_create(self, serializer):
-        login(request = self.request, user = serializer.save())
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+    def patch(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.put(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        logout(request)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class Update_passwordView(UpdateAPIView):
+    queryset = User
+    serializer_class = UptadePasswordSerializer
+    permission_classes = [IsAuthenticated,]
+
+    def put(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = request.user
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        old_password = request.data.get('old_password')
+        if request.user.check_password(old_password):
+            serializer.instance.set_password(request.data.get('new_password'))
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        return Response({"Пароль":"неверный"})
+
+

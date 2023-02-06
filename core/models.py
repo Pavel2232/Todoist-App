@@ -8,8 +8,8 @@ from django.db import models
 
 class User(AbstractBaseUser):
     username = models.CharField(max_length=200,unique=True)
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=200,null=True)
+    last_name = models.CharField(max_length=200,null=True)
     email = models.EmailField(max_length=255,null=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
