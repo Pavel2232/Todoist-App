@@ -1,27 +1,23 @@
 from django.contrib.auth import authenticate, login, logout
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie
-from rest_framework import authentication, exceptions, status
+from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView, RetrieveUpdateAPIView, \
-    get_object_or_404, RetrieveUpdateDestroyAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.viewsets import ViewSet
 
 from core.models import User
 from core.serializers import SingupUserSerializer, LoginUserSerializer, EditProfileSerializer, UptadePasswordSerializer
 
 
-# Create your views here.
 
 class SingupView(CreateAPIView):
+    """Регистрация пользователя"""
     serializer_class = SingupUserSerializer
 
 
 
 class LoginUserView(CreateAPIView):
+    """Вход в сервис"""
     serializer_class = LoginUserSerializer
 
 
@@ -38,30 +34,14 @@ class LoginUserView(CreateAPIView):
 
 
 class GetEditProfile(RetrieveUpdateDestroyAPIView):
+    """Детальная информация о пользователе"""
     queryset = User
     serializer_class = EditProfileSerializer
     permission_classes = [IsAuthenticated,]
 
+    def get_object(self):
+        return self.request.user
 
-    def get(self, request, *args, **kwargs):
-        instance = request.user
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
-    def put(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = request.user
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            instance._prefetched_objects_cache = {}
-
-        return Response(serializer.data)
-    def patch(self, request, *args, **kwargs):
-        kwargs['partial'] = True
-        return self.put(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         logout(request)
@@ -69,6 +49,7 @@ class GetEditProfile(RetrieveUpdateDestroyAPIView):
 
 
 class Update_passwordView(UpdateAPIView):
+    """Вью для смены пароля"""
     queryset = User
     serializer_class = UptadePasswordSerializer
     permission_classes = [IsAuthenticated,]

@@ -1,7 +1,6 @@
 from django.contrib.auth.models import (
     BaseUserManager
 )
-from django.contrib.auth.password_validation import validate_password
 from rest_framework.exceptions import ValidationError
 
 
