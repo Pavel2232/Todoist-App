@@ -1,4 +1,5 @@
 #!/bin/bash
+python manage.py makemigrations
 python manage.py migrate --check
 status=$?
 if [[ $status != 0 ]]; then
