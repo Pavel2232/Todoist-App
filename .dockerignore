@@ -9,3 +9,4 @@
 !entrypoint.sh
 !poetry.lock
 !pyproject.toml
+!goals/**
