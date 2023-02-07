@@ -24,9 +24,13 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'username'
 
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['email']
 
+    def has_perm(self, perm, obj=None):
+        return True
 
+    def has_module_perms(self, app_label):
+        return True
 
 
     class Meta:

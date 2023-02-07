@@ -37,7 +37,10 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
-APPS = ['core',]
+APPS = [
+    'core',
+    'goals',
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -53,6 +56,7 @@ INSTALLED_APPS = [
 
     'drf_spectacular',
     'corsheaders',
+    'django_filters',
 
 
 ]+APPS
@@ -81,7 +85,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.middleware.SocialAuthExceptionMiddleware',
+                # 'social_django.middleware.SocialAuthExceptionMiddleware',
             ],
         },
     },
@@ -120,6 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',

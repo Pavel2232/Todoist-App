@@ -60,3 +60,9 @@ class UptadePasswordSerializer(serializers.ModelSerializer):
         return  super().update(instance,validated_data)
 
 
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id','username','first_name','last_name','email')

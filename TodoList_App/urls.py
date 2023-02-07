@@ -22,8 +22,9 @@ from TodoList_App import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('core/',include('core.urls')),
-    path('oauth/', include("social_django.urls", namespace="social")),
+    path('goals/',include('goals.urls')),
 
+    path('oauth/', include("social_django.urls", namespace="social")),
     path("api/shema/", SpectacularAPIView.as_view(), name='schema'),
     path("api/shema/swagger-ui/", SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
