@@ -70,6 +70,7 @@ class Goal(BaseData):
 
 
 
+
 class GoalComment(BaseData):
     class Meta:
         verbose_name = "Комментарий"
