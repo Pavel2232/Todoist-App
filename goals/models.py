@@ -48,11 +48,10 @@ class Goal(BaseData):
     user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT)
     title = models.CharField(verbose_name="Название", max_length=255)
     description = models.CharField(max_length=1000,null=True)
-    category = models.ForeignKey(GoalCategory,verbose_name="Категория", on_delete=models.PROTECT, related_name='goal_category')
+    category = models.ForeignKey(GoalCategory,verbose_name="Категория", on_delete=models.PROTECT, related_name='goals_category')
     status = models.PositiveSmallIntegerField(verbose_name="Статус",choices=Status.choices,default=Status.to_do)
     priority = models.PositiveSmallIntegerField(verbose_name="Приоритет",choices=Priority.choices,default=Priority.medium)
     due_date = models.DateTimeField(verbose_name="Крайний срок")
-    is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
 
 
     def __str__(self):
@@ -66,7 +65,7 @@ class GoalComment(BaseData):
         verbose_name_plural = "Комментарии"
 
     text = models.CharField(max_length=255)
-    user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.CASCADE,related_name='comment_by_user')
-    goal = models.ForeignKey(Goal,verbose_name='Цель',on_delete=models.CASCADE,related_name='comment')
+    user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.CASCADE,related_name='comments_by_user')
+    goal = models.ForeignKey(Goal,verbose_name='Цель',on_delete=models.CASCADE,related_name='comments')
 
 
