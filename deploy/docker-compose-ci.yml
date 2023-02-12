@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   fronted:
-    image: sermalenk/skypro-front:lesson-37
+    image: sermalenk/skypro-front:lesson-38
     restart: always
     depends_on:
       api:
@@ -19,6 +19,16 @@ services:
       db:
           condition: service_healthy
     container_name: todolist_app
+  bot:
+    build:
+      context: .
+    depends_on:
+      db:
+        condition: service_started
+      api:
+        condition: service_started
+    command: python manage.py runbot
+
   db:
     image: postgres:12.4-alpine
     environment:

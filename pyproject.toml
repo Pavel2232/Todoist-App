@@ -18,7 +18,13 @@ django-cors-headers = "^3.13.0"
 djangorestframework = "^3.14.0"
 social-auth-app-django = "^5.0.0"
 django-filter = "^22.1"
+dataclasses-json = "^0.5.7"
+pydantic = "^1.10.4"
 
+
+[tool.poetry.group.dev.dependencies]
+pytest-django = "^4.5.2"
+pytest-factoryboy = "^2.5.1"
 
 [build-system]
 requires = ["poetry-core"]

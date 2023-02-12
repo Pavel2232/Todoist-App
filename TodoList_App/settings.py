@@ -40,6 +40,7 @@ ALLOWED_HOSTS = ['*']
 APPS = [
     'core',
     'goals',
+    'bot',
 ]
 # Application definition
 
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'social_django',
+
 
     'drf_spectacular',
     'corsheaders',
@@ -185,3 +187,6 @@ SOCIAL_AUTH_USER_MODEL = 'core.User'
 SOCIAL_AUTH_VK_EXTRA_DATA = [
     ('email','email'),
 ]
+
+
+KEY_TG_BOT = env('KEY_TG_BOT')

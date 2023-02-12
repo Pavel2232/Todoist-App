@@ -62,7 +62,7 @@ class Goal(BaseData):
     category = models.ForeignKey(GoalCategory,verbose_name="Категория", on_delete=models.PROTECT, related_name='goals_category')
     status = models.PositiveSmallIntegerField(verbose_name="Статус",choices=Status.choices,default=Status.to_do)
     priority = models.PositiveSmallIntegerField(verbose_name="Приоритет",choices=Priority.choices,default=Priority.medium)
-    due_date = models.DateTimeField(verbose_name="Крайний срок")
+    due_date = models.DateTimeField(verbose_name="Крайний срок",blank=True)
 
 
     def __str__(self):
