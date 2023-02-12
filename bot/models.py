@@ -28,3 +28,5 @@ class TgUser(models.Model):
         self.save(update_fields=('verification_code', ))
 
         return self.verification_code
+
+
