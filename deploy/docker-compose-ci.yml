@@ -20,8 +20,7 @@ services:
           condition: service_healthy
     container_name: todolist_app
   bot:
-    build:
-      context: .
+    image: pavel2232/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
     env_file:
       - .env
