@@ -10,4 +10,4 @@
 !poetry.lock
 !pyproject.toml
 !goals/**
-!test_bot/**
+!bot/**
