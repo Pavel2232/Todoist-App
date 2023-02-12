@@ -30,7 +30,6 @@ class Command(BaseCommand):
 
 
     def handle(self,*args,**options):
-        offset = 0
         while True:
             res = self.tg_client.get_updates(offset=self.offset)
             for item in res.result:
@@ -67,8 +66,7 @@ class Command(BaseCommand):
         match message.text:
             case '/goals':
                 self._handle_goals_command(message)
-            # case '/cancel':
-            #     self._handle_cancel(message)
+
 
 
 
@@ -84,11 +82,13 @@ class Command(BaseCommand):
     #         text='Задайте команду'
     #     )
 
-    # def _handle_cancel(self,message: Message):
-    #     self.tg_client.send_message(
-    #         chat_id=message.chat.id,
-    #         text='Операция отменена'
-    #     )
+    def _handle_cancel(self,message: Message):
+        self.category = None
+        self.title= None
+        self.tg_client.send_message(
+            chat_id=message.chat.id,
+            text='Операция отменена'
+        )
 
 
 
@@ -102,38 +102,16 @@ class Command(BaseCommand):
             chat_id=message.chat.id,
             text='\n'.join(goals) if goals else 'No goals'
         )
-    #
-    # def _handle_category_command(self,message: Message):
-    #     goals: list[str] = list(
-    #         GoalCategory.objects.filter(board__participants__user= self.tg_user.user_id)
-    #         .exclude(is_deleted=True).values_list('title',flat=True)
-    #     )
-    #     self.goals = goals
-    #     self.tg_client.send_message(
-    #         chat_id=message.chat.id,
-    #         text='\n'.join(goals)  if goals else 'No goals'
-    #     )
 
-    # def _handle_create_command(self,message: Message):
-    #     if message.text not in self.goals:
-    #         self.tg_client.send_message(
-    #             chat_id= message.chat.id,
-    #             text= 'Введите предложенную категорию, создавать категории пока не умею'
-    #         )
-    #         self.get_category = False
-    #     category = GoalCategory.objects.get(title=message.text)
-    #     self.get_category = True
-    #     self.tg_client.send_message(
-    #         chat_id=message.chat.id,
-    #         text='Название цели?'
-    #     )
-    #
-    #     title = message.text
-    #     with transaction.atomic():
-    #         result = Goal.objects.create(title=title,category=category,user=self.tg_user.user_id)
-    #
-    #     self.tg_client.send_message(
-    #         chat_id=message.chat.id,
-    #         text=result.objects.values_list('title',flat=True)
-    #     )
+    def _handle_category_command(self,message: Message):
+        goals: list[str] = list(
+            GoalCategory.objects.filter(board__participants__user= self.tg_user.user_id)
+            .exclude(is_deleted=True).values_list('title',flat=True)
+        )
+        self.goals = goals
+        self.tg_client.send_message(
+            chat_id=message.chat.id,
+            text='\n'.join(goals)  if goals else 'No goals'
+        )
+
 
