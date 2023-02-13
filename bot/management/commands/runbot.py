@@ -34,10 +34,6 @@ class ModelForCreate:
         self._steps = "Создание цели"
         return self._steps
 
-    def due_data(self):
-        self._steps = "Дедлайн"
-        return self._steps
-
     def cancel_commands(self):
         self._steps = None
         return self._steps
@@ -96,8 +92,6 @@ class Command(BaseCommand):
             self.__handle_check_category_message(message)
         elif steps.check_steps() == "Придумываем название":
             self._handle_create_massege(message)
-        elif steps.check_steps() == "Дедлайн":
-            self._handle_dedline_massege(message)
         elif steps.check_steps() == "Создание цели":
             self._handle_create_goal(message)
         else:
@@ -169,18 +163,13 @@ class Command(BaseCommand):
         self.tg_client.send_message(
             chat_id=message.chat.id,
             text="Введите название")
-        steps.due_data()
-
-    def _handle_dedline_massege(self, message: Message):
-        self.tg_client.send_message(
-            chat_id=message.chat.id,
-            text="Дедлайн через сколько дней?")
         steps.create_goal()
+
 
     def _handle_create_goal(self,message:Message):
         steps.name_goal = message.text
         if steps.name_goal:
-            future_date = datetime.datetime.today() + datetime.timedelta(days=int(message.text))
+            future_date = datetime.datetime.today() + datetime.timedelta(days=7)
             Goal.objects.create(title=message.text, user=self.tg_user.user, category=self.create_category,
                                 due_date=future_date)
             self.tg_client.send_message(
