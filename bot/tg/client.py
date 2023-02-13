@@ -16,10 +16,10 @@ class TgClient:
         return GetUpdatesResponse(**response.json())
 
     def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
-        url = self.get_url('sendMessage')
+        url = self.get_url('SendMessage')
         response = requests.post(url,json={
             'chat_id': chat_id,
-            'text':text,
+            'text': text,
         })
         return SendMessageResponse(**response.json())
 
