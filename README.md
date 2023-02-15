@@ -9,14 +9,20 @@ https://github.com/Pavel2232/app_by_django
 активируйте poetry install 
 
 заполнить файл .env на примере .env.example
-можете использовать такие значения как:
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-      POSTGRES_DB: test
-для заполнения тестовой бд.
-
-соберите контейнер postgres командой
-docker-compose up -d
-или же подключитесь к своей чистой базе
+оформите docker-compose-ci под свой проект
+соберите контейнер  командой
+docker compose up -d
 
 накатите миграции и запустите приложение
+
+всё будет отлично работать
+
+
+
+Так же вы можете скачать проект:
+https://github.com/Pavel2232/app_by_django
+
+собрать докерфайл
+создать свою БД
+накатить и запустить
+всё готово!
