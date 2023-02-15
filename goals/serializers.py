@@ -6,7 +6,7 @@ from core.serializers import UserSerializer
 from goals.models import GoalCategory, Goal, GoalComment, BoardParticipant, Board
 
 
-class GoalCreateSerializer(serializers.ModelSerializer):
+class GoalCategoryCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     board = serializers.SlugRelatedField(
         queryset=Board.objects.all(),
@@ -16,10 +16,8 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoalCategory
-        read_only_fields = ('id','created','update','user')
+        read_only_fields = ('id', 'created', 'update', 'user')
         fields = '__all__'
-
-
 
 
 class GoalCategorySerializer(serializers.ModelSerializer):
@@ -29,24 +27,25 @@ class GoalCategorySerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='id'
     )
+
     class Meta:
         model = GoalCategory
         fields = "__all__"
         read_only_fields = ("id", "created", "updated", "user")
 
 
-class GoalGoalCreateSerializer(serializers.ModelSerializer):
+class GoalCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     category = serializers.SlugRelatedField(
         required=False,
         queryset=GoalCategory.objects.all(),
-        slug_field = "id"
+        slug_field="id"
     )
+
     class Meta:
         model = Goal
         fields = "__all__"
-        read_only_fields = ("id", "created","update")
-
+        read_only_fields = ("id", "created", "update")
 
     def validate_category(self, value):
         if value.is_deleted:
@@ -56,8 +55,6 @@ class GoalGoalCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("not owner of category")
 
         return value
-
-
 
 
 class GoalSerializer(serializers.ModelSerializer):
@@ -70,21 +67,18 @@ class GoalSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "created", "updated", "user",)
 
 
-
 class CommentCreateSerializer(serializers.ModelSerializer):
-    """Создание комментария"""
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     goal = serializers.SlugRelatedField(
         required=False,
         queryset=Goal.objects.all(),
-        slug_field= "id"
+        slug_field="id"
     )
 
     class Meta:
         model = GoalComment
         fields = "__all__"
-        read_only_fields = ("id", "created","update")
-
+        read_only_fields = ("id", "created", "update")
 
     def validate_comment(self, value):
         if value.is_deleted:
@@ -104,6 +98,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = GoalComment
         fields = "__all__"
         read_only_fields = ("id", "created", "updated", "user")
+
 
 class BoardCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
@@ -174,6 +169,7 @@ class BoardSerializer(serializers.ModelSerializer):
             instance.save()
 
         return instance
+
 
 class BoardListSerializer(serializers.ModelSerializer):
     class Meta:

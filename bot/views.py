@@ -6,19 +6,16 @@ from TodoList_App import settings
 from bot.serializers import BotTgSerializer
 from bot.tg.client import TgClient
 
-
+"""Вью для связи аккаунта сайта и аккаунта телеграмм"""
 class VeryficationView(UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BotTgSerializer
-
-
 
     def update(self, request, *args, **kwargs):
         serializer: BotTgSerializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
-
 
     def perform_update(self, serializer):
         tg_user = serializer.save()

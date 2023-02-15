@@ -5,6 +5,8 @@ from django_filters import rest_framework
 
 from goals.models import Goal, GoalComment, GoalCategory
 
+"""Фильтры для целей,коментариев,категорий"""
+
 
 class GoalDateFilter(rest_framework.FilterSet):
     class Meta:
@@ -25,8 +27,9 @@ class CommentGoalFilter(rest_framework.FilterSet):
     class Meta:
         model = GoalComment
         fields = {
-            'goal': ('exact',"in")
+            'goal': ('exact', "in")
         }
+
 
 class GoalCategoryFilter(rest_framework.FilterSet):
     class Meta:

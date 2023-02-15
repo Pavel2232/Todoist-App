@@ -1,6 +1,7 @@
-from typing import Optional
-
 from pydantic import BaseModel, Field
+
+"""Классы pydantic для удобной структуры сообщений из телеграмм"""
+
 
 class MessageForm(BaseModel):
     id: int
@@ -14,12 +15,13 @@ class Chat(BaseModel):
 
 class Message(BaseModel):
     message_id: int
-    from_: MessageForm = Field(..., alias= 'from' )
+    from_: MessageForm = Field(..., alias='from')
     chat: Chat
     text: str | None = None
 
     class Config:
         allow_population_by_field_name = True
+
 
 class UpdateObj(BaseModel):
     update_id: int
@@ -34,4 +36,3 @@ class GetUpdatesResponse(BaseModel):
 class SendMessageResponse(BaseModel):
     ok: bool
     result: Message
-

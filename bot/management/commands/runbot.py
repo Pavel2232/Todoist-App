@@ -8,47 +8,50 @@ from bot.tg.client import TgClient
 from bot.tg.dc import Message
 from goals.models import Goal, Status, GoalCategory
 
-class ModelForCreate:
 
+class ModelForCreateGoal:
+    """Модель для создания целей и запоминания на каком моменте остановился пользователь"""
     def __init__(self):
         self._steps = None
         self.name_goal = None
 
-
-    def check_steps(self):
+    def check_steps(self) -> str:
         """Проверка на каком мы этапе создания"""
         if self._steps:
             return self._steps
         else:
             self._steps = 'start'
             return self._steps
-    def choose_category(self):
+
+    def choose_category(self) -> str:
         self._steps = "Выбираем категорию"
         return self._steps
 
-    def title(self):
+    def title(self) -> str:
         self._steps = "Придумываем название"
         return self._steps
 
-    def create_goal(self):
+    def create_goal(self) -> str:
         self._steps = "Создание цели"
         return self._steps
 
-    def cancel_commands(self):
+    def cancel_commands(self) -> (str, None):
+        """Остановка создания"""
         self._steps = None
         return self._steps
 
 
-steps = ModelForCreate()
-class Command(BaseCommand):
+steps = ModelForCreateGoal()
 
+
+class Command(BaseCommand):
 
     def __init__(self):
         super().__init__()
-        self.tg_client = TgClient(token=settings.KEY_TG_BOT)
+        self.tg_client: TgClient = TgClient(token=settings.KEY_TG_BOT)
         self.__tg_user: TgUser | None = None
-        self.offset = 0
-        self.category = []
+        self.offset: int = 0
+        self.category: list = []
 
     @property
     def tg_user(self) -> TgUser:
@@ -56,36 +59,33 @@ class Command(BaseCommand):
             return self.__tg_user
         raise RuntimeError('User does not exist')
 
+    def handle(self, *args, **options):
+        try:
+            while True:
+                res = self.tg_client.get_updates(offset=self.offset)
+                for item in res.result:
+                    self.offset = item.update_id + 1
 
+                    self.__tg_user, _ = TgUser.objects.get_or_create(
+                        chat_id=item.message.chat.id,
+                        defaults={'username': item.message.from_.username}
+                    )
+                    if self.tg_user.user_id:
+                        self._handle_verified_user(item.message)
+                    else:
+                        self._handle_unverified_user(item.message)
+        except:
+            raise SystemExit
 
-    def handle(self,*args,**options):
-        while True:
-            res = self.tg_client.get_updates(offset=self.offset)
-            for item in res.result:
-                self.offset = item.update_id + 1
-
-                self.__tg_user, _ = TgUser.objects.get_or_create(
-                    chat_id= item.message.chat.id,
-                    defaults={'username':item.message.from_.username}
-                )
-                if self.tg_user.user_id:
-                    self._handle_verified_user(item.message)
-                else:
-                    self._handle_unverified_user(item.message)
-
-
-
-
-    def _handle_unverified_user(self,message: Message):
+    def _handle_unverified_user(self, message: Message):
         verification_code = self.tg_user.set_verification_code()
-
 
         self.tg_client.send_message(
             chat_id=message.chat.id,
             text=f"verification code {verification_code}"
         )
 
-    def _handle_verified_user(self,message: Message):
+    def _handle_verified_user(self, message: Message):
         if message.text.startswith('/'):
             self._handle_command(message)
         elif steps.check_steps() == "Выбираем категорию":
@@ -97,11 +97,10 @@ class Command(BaseCommand):
         else:
             self.tg_client.send_message(
                 chat_id=message.chat.id,
-                text= 'Неизвестные команды'
+                text='Неизвестные команды'
             )
 
-
-    def _handle_command(self,message: Message):
+    def _handle_command(self, message: Message):
         match message.text:
             case '/goals':
                 self._handle_goals_command(message)
@@ -116,9 +115,6 @@ class Command(BaseCommand):
             case '/cancel':
                 self._handle_cancel_command(message)
 
-
-
-
     def _handle_cancel_command(self, message: Message):
         steps.check_steps()
         self.tg_client.send_message(
@@ -126,10 +122,10 @@ class Command(BaseCommand):
             text='Введите команду'
         )
 
-    def _handle_goals_command(self,message: Message):
+    def _handle_goals_command(self, message: Message):
         goals: list[str] = list(
-            Goal.objects.filter(category__board__participants__user= self.tg_user.user_id)
-            .exclude(status=Status.archived).values_list('title',flat=True)
+            Goal.objects.filter(category__board__participants__user=self.tg_user.user_id)
+            .exclude(status=Status.archived).values_list('title', flat=True)
         )
 
         self.tg_client.send_message(
@@ -137,10 +133,10 @@ class Command(BaseCommand):
             text='\n'.join(goals) if goals else 'No goals'
         )
 
-    def _handle_category_command(self,message: Message):
+    def _handle_category_command(self, message: Message):
         category: list[str] = list(
-            GoalCategory.objects.filter(board__participants__user= self.tg_user.user_id)
-            .exclude(is_deleted=True).values_list('title',flat=True)
+            GoalCategory.objects.filter(board__participants__user=self.tg_user.user_id)
+            .exclude(is_deleted=True).values_list('title', flat=True)
         )
         self.category = category
         self.tg_client.send_message(
@@ -148,8 +144,7 @@ class Command(BaseCommand):
             text='\n'.join(category) if category else 'No category'
         )
 
-
-    def __handle_check_category_message(self,message: Message):
+    def __handle_check_category_message(self, message: Message):
         if message.text in self.category:
             self.create_category = GoalCategory.objects.get(title=message.text)
             steps.title()
@@ -165,8 +160,7 @@ class Command(BaseCommand):
             text="Введите название")
         steps.create_goal()
 
-
-    def _handle_create_goal(self,message:Message):
+    def _handle_create_goal(self, message: Message):
         steps.name_goal = message.text
         if steps.name_goal:
             future_date = datetime.datetime.today() + datetime.timedelta(days=7)

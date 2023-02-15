@@ -9,17 +9,14 @@ from core.models import User
 from core.serializers import SingupUserSerializer, LoginUserSerializer, EditProfileSerializer, UptadePasswordSerializer
 
 
-
 class SingupView(CreateAPIView):
     """Регистрация пользователя"""
     serializer_class = SingupUserSerializer
 
 
-
 class LoginUserView(CreateAPIView):
     """Вход в сервис"""
     serializer_class = LoginUserSerializer
-
 
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
@@ -29,30 +26,28 @@ class LoginUserView(CreateAPIView):
             login(request, user)
             return Response(self.serializer_class(user).data, status=status.HTTP_201_CREATED)
         else:
-            raise ValidationError({'username or password':"Неверный"})
-
+            raise ValidationError({'username or password': "Неверный"})
 
 
 class GetEditProfile(RetrieveUpdateDestroyAPIView):
     """Детальная информация о пользователе"""
     queryset = User
     serializer_class = EditProfileSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, ]
 
     def get_object(self):
         return self.request.user
-
 
     def delete(self, request, *args, **kwargs):
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class Update_passwordView(UpdateAPIView):
+class UpdatePasswordView(UpdateAPIView):
     """Вью для смены пароля"""
     queryset = User
     serializer_class = UptadePasswordSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, ]
 
     def put(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -64,6 +59,4 @@ class Update_passwordView(UpdateAPIView):
             serializer.instance.set_password(request.data.get('new_password'))
             self.perform_update(serializer)
             return Response(serializer.data)
-        return Response({"Пароль":"неверный"})
-
-
+        return Response({"Пароль": "неверный"})
