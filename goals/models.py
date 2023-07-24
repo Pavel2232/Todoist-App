@@ -56,7 +56,7 @@ class Goal(BaseData):
 
     user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT)
     title = models.CharField(verbose_name="Название", max_length=255)
-    description = models.CharField(verbose_name="Описание",max_length=1000, null=True)
+    description = models.TextField(verbose_name="Описание", null=True)
     category = models.ForeignKey(GoalCategory, verbose_name="Категория", on_delete=models.PROTECT,
                                  related_name='goals_category')
     status = models.PositiveSmallIntegerField(verbose_name="Статус", choices=Status.choices, default=Status.to_do)
